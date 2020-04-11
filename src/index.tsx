@@ -1,15 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
 import ReactDom from 'react-dom';
+import App from './pages/app';
 
-export default class App extends Component {
-
-  render() {
-    return <div>hello</div>
-  }
-}
+const root = document.querySelector('#root');
 
 ReactDom.render(
-  <App></App>,
-  document.querySelector('#root')
+  <App/>,
+  root
 );
-
