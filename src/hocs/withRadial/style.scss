@@ -1,0 +1,38 @@
+// .radial:after { /*鼠标入的时候，伪类元素的动画开始，动画名称就是下面@keyframes定义的circle*/
+//   animation: circle 1.3s ease-in-out 75ms  infinite;
+// }
+
+// .radial {
+//   width:20px;
+//   height:20px;
+//   border-radius:50%;
+//   background-color:#f50ad5;
+//   margin:80px;
+// }
+// .radial:hover::after{
+//   content:'';
+//   display:block;
+//   left:0;
+//   top:0;
+//   transform: translateY(-100%);
+//   width:20px;
+//   height:20px;
+//   border-radius:50%;
+// }
+
+// @keyframes circle{
+//   0% {
+//       opacity: 0.4;
+//       transform: translateY(-100%);
+//   }
+//   40% {
+//       opacity: 0.7;
+//       box-shadow: 0 0 0 2px rgba(255,255,255,0.3), 0 0 10px 10px black, 0 0 0 10px rgba(255,255,255,0.8); /*三层阴影*/
+//       transform: translateY(-100%);
+//   }
+//   100% {
+//       box-shadow: 0 0 0 2px rgba(255,255,255,0.3), 0 0 10px 10px black, 0 0 0 10px rgba(255,255,255,0.8);
+//       transform: translateY(-100%) scale(2); /*放大两倍*/
+//       opacity: 0;
+//   }
+// }

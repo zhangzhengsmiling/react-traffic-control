@@ -27,7 +27,7 @@ const withPureRender = <P extends object>(ChildComponent: React.ComponentType<P>
     }
 
     render() {
-      return <ChildComponent {...this.props}></ChildComponent>
+      return <ChildComponent {...this.props} />
     }
   } as P;
   return PureRender;

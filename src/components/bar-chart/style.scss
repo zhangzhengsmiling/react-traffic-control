@@ -1,0 +1,391 @@
+// @import '../../../../mixins/function.scss';
+// @import '../../../../mixins/common.scss';
+
+
+.clear-fix::after {
+  display: block;
+  content: "";
+  clear: both;
+}
+
+.overview {
+  position: absolute;
+  z-index: 1;
+  overflow: hidden;
+  top: 0;
+  width: 100%;
+  // height: calc(100% - 110px);
+  height: 100%;
+  // margin-top: 110px;
+  // padding: 0;
+  padding-top: 100px;
+  padding-bottom: 32px;
+  // z-index: 1000; 
+  background: rgba(16, 31, 63, 0.85);
+  // overflow: scroll;
+  .nav-wrapper {
+    width: 100%;
+    height: 43%;
+    margin: 0;
+  }
+  .overview-area {
+    height: 57%;
+    // background: orange;
+    padding: 32px 32px 0px;
+    width: 100%;
+    display: flex;
+    .area-wrapper {
+      width: 100%;
+      height: 100%;
+      // background: red;
+      display: flex;
+      .value {
+        color: #fff;
+        text-align: center;
+        font-size: 20px;
+        line-height: 20px
+      }
+      .label {
+        color: rgba(255, 255, 255, 0.8);
+        white-space: nowrap;
+        text-align: center;
+        font-size: 16px;
+        margin-top: 4px;
+      }
+      .icon {
+        width: 40px;
+        height: 40px;
+      }
+      .item-dot {
+        margin-left: 50%;
+        transform: translateX(-50%);
+        margin-top: 4px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+      }
+      .title {
+        color: #fff;
+        // font-size: 20px;
+      }
+      .overview-alert-status {
+        height: 100%;
+        background: rgb(21, 40, 91);
+        padding: 20px;
+        flex: 1;
+        margin-right: 32px;
+        min-width: 241.25px;
+        .wrapper {
+          width: 100%;
+          height: 100%;
+        }
+        .status-ring-chart {
+          width: 100%;
+          height: 60%;
+        }
+        .statistic-wrapper {
+          width: 100%;
+          height: 40%;
+        }
+      }
+      .overview-flow-park {
+        height: 100%;
+        width: 100%;
+        flex: 1;
+        margin-right: 32px;
+        min-width: 241.25px;
+        .overview-flow {
+          background: rgb(21, 40, 91);
+          width: 100%;
+          height: calc((100% - 20px) / 2);
+          padding: 20px;
+          .overview-flow-wrapper {
+            width: 100%;
+            height: calc(100% - 20px);
+          }
+        }
+        .overview-parking {
+          width: 100%;
+          background: rgb(21, 40, 91);
+          height: calc((100% - 20px) / 2);
+          margin-top: 20px;
+          padding: 20px;
+        }
+      }
+      .overview-video {
+        position: relative;
+        height: 100%;
+        background: rgb(21, 40, 91);
+        flex: 1;
+        margin-right: 32px;
+        min-width: 241.25px;
+        .video {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 100%;
+        }
+        .mtr20 {
+          margin-top: 20px;
+          margin-left: 20px;
+        }
+      }
+      .overview-device {
+        min-width: 241.25px;
+        height: 100%;
+        flex: 0.76;
+        .device {
+          width: 100%;
+          height: calc(100% - 24px - 128px);
+          background: rgb(21, 40, 91);
+        }
+        .light-car-total {
+          // background: hotpink;
+          display: flex;
+          width: 100%;
+          height: 128px;
+          margin-top: 24px;
+          .light-car {
+            flex: 0.8;
+            width: auto;
+            padding: 20px;
+            background: rgb(21, 40, 91);
+            position: relative;
+            .wrapper {
+              position: absolute;
+              width: 100%;
+              left: 50%;
+              top: 50%;
+              padding: 10px;
+              transform: translate(-50%, -50%);
+              .light-car-total-label {
+                text-align: center;
+                font-size: 16px;
+                font-weight: 300;
+                color: #fff;
+                white-space: nowrap;
+              }
+              .light-car-total-value {
+                text-align: center;
+                color: #fff;
+                font-weight: 600;
+                font-size: 20px;
+                margin-top: 8px;
+              }
+            }
+          }
+          .device-status {
+            background: rgb(21, 40, 91);
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            width: calc(100% - 20px - 80px);
+            // min-width: 160px;
+            margin-left: 20px;
+            padding: 20px;
+            .wrapper {
+              width: 100%;
+              .status-label {
+                font-size: 14px;
+              }
+              .status-bar {
+                height: 12px;
+                padding: 2px 8px;
+              }
+              .status-value {
+                font-size: 14px;
+              }
+              flex: 1; 
+              .status-label {
+                color: #fff;
+                white-space: nowrap;
+              }
+              .status-bar {
+                width: 100%;
+                // height: 12px;
+                display: inline-block;
+                vertical-align: middle;
+                // padding: 2px 8px;
+              }
+              .status-value {
+                color: #fff;
+                text-align: right;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
+// 文本适配
+// @media screen and (max-width:1439px) and (min-width:1141px) {
+//   .overview {
+//     // height: calc(100% - #{down14andUp11px(80)} - 30px);
+//     // margin-top: calc(#{down14andUp11px(80)} + 30px);
+//     height: 100%;
+//     padding-top: calc(#{down14andUp11px(80)} + 30px);
+//     .overview-area {
+//       .area-wrapper {
+//         .value {
+//           font-size: down14andUp11px(20);
+//           line-height: down14andUp11px(20);
+//         }
+//         .label {
+//           font-size: down14andUp11px(16);
+//         }
+//         .icon {
+//           width: down14andUp11px(40);
+//           height: down14andUp11px(40);
+//         }
+//         .title {
+//           font-size: down14andUp11px(20);
+//         }
+//         .item-dot {
+//           width: down14andUp11px(8);
+//           height: down14andUp11px(8);
+//         }
+//         .overview-device {
+//           .device-status {
+//             .wrapper {
+//               .status-label {
+//                 font-size: down14andUp11px(14);
+//               }
+//               .status-value {
+//                 font-size: down14andUp11px(14);
+//               }
+//             }
+//           }
+//           .light-car-total {
+//             .light-car {
+//               .wrapper {
+//                 .light-car-total-label {
+//                   font-size: down14andUp11px(16);
+//                 }
+//                 .light-car-total-value {
+//                   font-size: down14andUp11px(20);
+//                 }
+//               }
+//             }
+//           }
+//         }
+//       }
+//     }
+//   }
+// }
+
+// // down1140Topx
+// @media screen and (max-width:1140px) {
+//   .overview {
+//     // height: calc(100% - #{down1140Topx(80)} - 30px);
+//     // margin-top: calc(#{down1140Topx(80)} + 30px);
+//     height: 100%;
+//     padding-top: calc(#{down1140Topx(80)} + 30px);
+//     .overview-area {
+//       .area-wrapper {
+//         .value {
+//           font-size: down1140Topx(20);
+//           line-height: down1140Topx(20);
+//         }
+//         .label {
+//           font-size: down1140Topx(16);
+//         }
+//         .icon {
+//           width: down1140Topx(40);
+//           height: down1140Topx(40);
+//         }
+//         .title {
+//           font-size: down1140Topx(20);
+//         }
+//         .item-dot {
+//           width: down1140Topx(8);
+//           height: down1140Topx(8);
+//         }
+//         .overview-device {
+//           .device-status {
+//             .wrapper {
+//               .status-label {
+//                 font-size: down1140Topx(14);
+//               }
+//               .status-value {
+//                 font-size: down1140Topx(14);
+//               }
+//             }
+             
+//           }
+//           .light-car-total {
+//             .light-car {
+//               .wrapper {
+//                 .light-car-total-label {
+//                   font-size: down1140Topx(16);
+//                 }
+//                 .light-car-total-value {
+//                   font-size: down1140Topx(20);
+//                 }
+//               }
+//             }
+//           }
+//         }
+//       }
+//     }
+//   }
+// }
+
+// // up19pxTovw
+// @media screen and (min-width:1920px) {
+//   .overview {
+//     // height: calc(100% - #{up19pxTovw(80)} - 30px);
+//     // margin-top: calc(#{up19pxTovw(80)} + 30px);
+//     height: 100%;
+//     padding-top: calc(#{up19pxTovw(80)} + 30px);
+//     .overview-area {
+//       .area-wrapper {
+//         .value {
+//           font-size: up19pxTovw(20);
+//           line-height: up19pxTovw(20);
+//         }
+//         .label {
+//           font-size: up19pxTovw(16);
+//         }
+//         .title {
+//           font-size: up19pxTovw(20);
+//         }
+//         .icon {
+//           width: up19pxTovw(40);
+//           height: up19pxTovw(40);
+//         }
+//         .item-dot {
+//           width: up19pxTovw(8);
+//           height: up19pxTovw(8);
+//         }
+//         .overview-device {
+//           .device-status {
+//             .wrapper {
+//               .status-label {
+//                 font-size: up19pxTovw(14)!important;
+//               }
+//               .status-value {
+//                 font-size: up19pxTovw(14)!important;
+//               }
+//             }
+             
+//           }
+//           .light-car-total {
+//             .light-car {
+//               .wrapper {
+//                 .light-car-total-label {
+//                   font-size: up19pxTovw(16);
+//                 }
+//                 .light-car-total-value {
+//                   font-size: up19pxTovw(20);
+//                 }
+//               }
+//             }
+//           }
+//         }
+//       }
+//     }
+//   }
+// }
