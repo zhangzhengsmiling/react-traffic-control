@@ -6,7 +6,7 @@ interface IPropCountDown {
   value?: number;
   time?: number;
   ticks?: number;
-  mapFn?: Function;
+  mapfn?: Function;
   style?: any;
   className?: string;
 }
@@ -91,13 +91,13 @@ export default class CountDown extends Component<IPropCountDown, any> {
   }
 
   render () {
-    let mapFn = this.props.mapFn;
+    let mapfn = this.props.mapfn;
     return (
       <>
         {
           <span {...this.props}>
             {
-              (mapFn && _.isFunction(mapFn)) ? mapFn(this.state.counter) : this.state.counter
+              (mapfn && _.isFunction(mapfn)) ? mapfn(this.state.counter) : this.state.counter
             }
           </span>
         }

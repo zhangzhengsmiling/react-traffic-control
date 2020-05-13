@@ -10,13 +10,16 @@ const DEFALT_PLACEHOLDER = '请选择';
 
 interface IPropsDropSelect {
   placeholder?: string;
-  menu: {key: string | number, value: string | number}[],
-  onChange?: (key: string, target: any) => any;
+  menu: {key: string | number, value: string | number, icon: any}[],
+  onChange?: (key: string | number, target: any) => any;
+  filterOption?: any;
 }
 
 const DropSelect = (props: IPropsDropSelect) => {
   const menu = props.menu;
   const placeholder = props.placeholder || DEFALT_PLACEHOLDER;
+  // const initSelect = menu.find(item => item.key === )
+  const initSelect = menu.find(item => item.key === props.filterOption);
   const [select, setSetlect] = useState(undefined);
   const handleMenuClick = (e) => {
     const key = e.key;
@@ -31,14 +34,21 @@ const DropSelect = (props: IPropsDropSelect) => {
   const levelMenu = <Menu onClick={handleMenuClick}>
       {
         menu.map((item) => 
-          <Menu.Item key={item.key}> {item.value} </Menu.Item>
+          <Menu.Item key={item.key}>
+            <svg style={{ marginRight:'10px' }} width="8" height="8">
+              {
+                item.icon ? item.icon : ''
+              }
+            </svg>
+            {item.value}
+          </Menu.Item>
         )
       }
     </Menu>
   return <Dropdown overlayClassName="drop-select" overlay={levelMenu}>
   <Button
-    className="button"
-    style={{ background: 'rgb(22, 55, 101)', border: '2px solid rgb(43, 142, 232)', color: '#fff', lineHeight: '10px', width: '100%' }}>
+    className="button drop-select-button"
+  >
     <span className="btn-text">
       { (select && select.value) || placeholder }
     </span>

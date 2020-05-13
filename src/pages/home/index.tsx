@@ -3,45 +3,11 @@ import GMap from '../../components/map';
 import { Switch, Route } from 'react-router-dom';
 
 import TitleBlock from '../../components/title-block';
+import ContainerAnt from '../../components/container-ant';
+import ContainerBox from '../../components/container-box';
 
 import './style.scss';
 
-// class TestComp extends React.Component {
-
-//   canvas:any = null;
-//   componentDidMount() {
-//     // 
-//   }
-
-//   render() {
-//     return <div>
-//       <img style={{ transform: 'translate(200px, 20px)' }} src="/imgs/light-border.png" alt=""/>
-//     </div>
-//   }
-// }
-
-// const TestComp = () => {
-//   const [position, setPosition] = useState({ left: 0, top: 0 });
-//   useEffect(() => {
-//     const itnervalId = setInterval(() => {
-//       setPosition((position) => {
-//         console.log(position)
-//         return {
-//           left: position.left + 5,
-//           top: position.top,
-//         }
-//       })
-//     }, 10)
-//     return () => {
-//       clearInterval(itnervalId);
-//     }
-//   }, [])
-//   return <div style={{ width: '100%', height: '10vh', background: 'red', overflow: 'hidden' }}>
-//     <img src="/imgs/light-border.png" style={{
-//       transform: `translate(${position.left}px, ${position.top}px)`
-//     }} alt=""/>
-//   </div>
-// }
 const CENTER_XIXISHIDI: [number, number] = [120.046033, 30.270448];
 
 const Home = (props:any) => {
@@ -64,26 +30,26 @@ const Home = (props:any) => {
     >
       
     </GMap>
-    {/* <div
-      style={{ width: '100%', height: '10vh', background: 'rgba(9, 21, 42, 0.8)', lineHeight: '10vh', textAlign: 'center' }}
-    >
-      <span style={{
-        fontSize: '40px',
-        color: '#fff',
-      }}>交通可视化管控</span>
-    </div> */}
-    {/* <TestComp></TestComp> */}
     <TitleBlock />
     <div style={{ width: '100%', height: '90vh', background: 'rgba(9, 21, 42, 0.6)', position: 'absolute', display: 'flex', padding: '20px' }}>
-      <div className="box" style={{ width: '30%', height: '100%', background: 'rgba(9, 21, 42, 0.8)' }}>
-        <div className="content" style={{ width: 'calc(100% - 4px)', height: 'calc(100% - 4px)', background: 'rgba(9, 21, 42, 1)' }}>aaa</div>
-      </div>
-      <div className="box" style={{ width: '40%', height: '100%', background: 'rgba(9, 21, 42, 0.8)', margin: '0 20px' }}>
-        <div className="content" style={{ width: 'calc(100% - 4px)', height: 'calc(100% - 4px)', background: 'rgba(9, 21, 42, 1)' }}></div>
-      </div>
-      <div className="box" style={{ width: '30%', height: '100%', background: 'rgba(9, 21, 42, 0.8)' }}>
-        <div className="content" style={{ width: 'calc(100% - 4px)', height: 'calc(100% - 4px)', background: 'rgba(9, 21, 42, 1)' }}></div>
-      </div>
+      <ContainerAnt style={{ width: '30%' }}>
+        <div style={{ width: '100%', height: '40px', textAlign: 'center' }}>
+          <span className="font-block" style={{ fontSize: '22px', fontWeight: 500 }} onClick={() => {
+            props.history.push('/traffic/alert');
+          }}>数据告警</span>
+        </div>
+        <div style={{ width: '40%', height: '4px', background: 'greenyellow', marginLeft: '50%', transform: 'translateX(-50%)' }}>
+          <div style={{ float: 'left', width: '50%', height: '4px', background: 'linear-gradient(to right, rgb(9, 21, 42), rgb(82, 140, 157))' }}></div>
+          <div style={{ float: 'left', width: '50%', height: '4px', background: 'linear-gradient(to left, rgb(9, 21, 42), rgb(82, 140, 157))' }}></div>
+        </div>
+        <ContainerBox title="标题" content={'aaaa'} />
+      </ContainerAnt>
+      <ContainerAnt style={{ width: '40%' }}>
+        
+      </ContainerAnt>
+      <ContainerAnt style={{ width: '30%' }}>
+        <div style={{ width: '100%', height: '40px', background: 'red' }}></div>
+      </ContainerAnt>
     </div>
   </div>
 }

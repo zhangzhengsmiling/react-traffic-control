@@ -180,3 +180,18 @@
   border-right-color: #fff;
   transition: width 0.2s ease-out,height 0.2s ease-out 0.2s;
 }
+
+
+
+.traffic {
+  position: absolute;
+  z-index: 10;
+  width: 100vw;
+  height: 100vh;
+  .g-map {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0;
+  }
+}

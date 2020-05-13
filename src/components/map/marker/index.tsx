@@ -52,7 +52,7 @@ export default class Marker extends Component<IPropsMarker, {}> {
   }
 
   componentDidMount() {
-    console.log(renderToString(this.props.content))
+    if(!this.props.map) return;
     this.renderMarker(this.props.map, this.props.position, this.props.content);
   }
 

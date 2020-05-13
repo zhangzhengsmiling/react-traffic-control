@@ -13,86 +13,6 @@ import Marker from './marker';
 // let AMap = null;
 declare let AMap;
 
-
-
-// const func = () => {
-//   setTimeout(() => {
-//     // 设置了样式索引的点标记数组
-
-//     const random = () => {
-//       return new Array(100)
-//         .fill('')
-//         .map(item => {
-//           console.log('---')
-//           return {
-//             lnglat: [117 + Math.random() * 6, 30 + Math.random() * 2],
-//             name: 'beijing',
-//             id:1,
-//             style: 0  // 该数据的样式取值styleObjectArr对应的样式索引
-//           }
-//         })
-//     }
-//     var styleObjectArr = [
-//       {
-//           url:"imgs/1.png",
-//           size: new AMap.Size(32, 32),
-//           offset:new AMap.Pixel(-16,-30)
-//       },
-//       {
-//           url:"imgs/2.png",
-//           size: new AMap.Size(32, 32),
-//           offset:new AMap.Pixel(-16,-30)
-//       },
-//       {
-//           url:"imgs/3.png",
-//           size:new AMap.Size(48, 48),
-//           offset:new AMap.Pixel(-24,-45), 
-//           textColor:'#CC0066'
-//       }
-//     ];
-//     const data: any = [{
-//       lnglat: [116.405285, 39.904989],
-//       name: 'beijing',
-//       id:1,
-//       // style: {}
-//       // style: 0  // 该数据的样式取值styleObjectArr对应的样式索引
-//       style: {
-//         url:"imgs/1.png",
-//         size: new AMap.Size(32, 32),
-//         offset:new AMap.Pixel(-16,-30)
-//     },
-//     },{
-//       lnglat: [116.405285, 39.904989],
-//       name: 'beijing',
-//       id:1,
-//       style: {
-//         url:"imgs/1.png",
-//         size: new AMap.Size(32, 32),
-//         offset:new AMap.Pixel(-16,-30)
-//     }
-//       // style: 0
-//     }
-//     ];
-//     // 实例化 AMap.MassMarks
-//     var massMarks = new AMap.MassMarks(data, {
-//       zIndex: 10000000, 	// 海量点图层叠加的顺序
-//       zooms: [3, 19],	 // 在指定地图缩放级别范围内展示海量点图层
-//       style: styleObjectArr 	//多种样式对象的数组
-//     });
-//     console.log('here runs................')
-
-//     debugger
-
-
-//     // 将数组设置到 massMarks 图层
-//     // massMarks.setData(data);
-    
-//     // 将 massMarks 添加到地图实例
-//     massMarks.setMap(this.map);
-
-//   }, 1000)
-// }
-
 enum MapEventEnum {
   ZOOM_START = 'zoomstart',
   ZOOM_END = 'zoomend',
@@ -185,7 +105,6 @@ export default class Map extends React.Component<IPropsMap, {}> {
             // 绑定事件监听
             this.bindMapEvents(this.props);
             // func()
-
             this.forceUpdate();
           }catch(error) {
             console.error(error.message);
@@ -237,7 +156,7 @@ export default class Map extends React.Component<IPropsMap, {}> {
 
   // 加载高德地图脚本
   fetchAMapScript = promisify((document:HTMLDocument, version:string, appKey:string, callback: PromiseErrorFunction) => {
-    let script: HTMLScriptElement|null = document.querySelector(`#data-${appKey}`);
+  let script: HTMLScriptElement|null = document.querySelector(`#data-${appKey}`);
     if(script) return callback(undefined, {message: '加载成功', loaded: true}); // 已加载相同appkey的高德API，跳过重复加载
     // 首次加载脚本
     let scriptLoca = document.createElement('script');
@@ -324,6 +243,7 @@ export default class Map extends React.Component<IPropsMap, {}> {
 
   // 地图组件清理工作
   destroy = () => {
+    if(!this.map) return;
     this.offMapEvents(this.props);
     this.map && this.map.destroy();
   }

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import * as echarts from 'echarts';
 import _ from 'lodash';
 
@@ -6,7 +6,7 @@ import './style.scss';
 
 const limitWidth = 1700;
 
-export default class BarChart extends Component<any, any> {
+export default class BarChart extends PureComponent<any, any> {
 
   chartDom = null;
   chart = null;
@@ -80,7 +80,12 @@ export default class BarChart extends Component<any, any> {
             dataIndex: idx,
           });
         }
-        this.chart.setOption(option, false)
+        this.chart.setOption(option, false);
+        const target = {
+          x: data.xAxis[idx],
+          y: data.data.map(item => item[idx]),
+        }
+        this.intervalCallback(idx, target);
       }, 3000);
       window.addEventListener('resize', () => {
         // const clientWidth = document.documentElement.clientWidth;
@@ -92,7 +97,7 @@ export default class BarChart extends Component<any, any> {
     }
   }
 
-  componentWillMount() {
+  componentWillUnmount() {
     clearInterval(this.intervalId);
   }
 
@@ -213,6 +218,12 @@ export default class BarChart extends Component<any, any> {
       }))
     };
 
+  }
+
+  intervalCallback = (index: number, target:any) => {
+    if(_.isFunction(this.props.callback)) {
+      this.props.callback(index, target);
+    }
   }
 
   render() {
