@@ -2,6 +2,8 @@ import React, { PureComponent } from 'react';
 import * as echarts from 'echarts';
 import _ from 'lodash';
 
+import filterProp from '../../utils/filterProp';
+
 import './style.scss';
 
 const limitWidth = 1700;
@@ -14,6 +16,7 @@ export default class BarChart extends PureComponent<any, any> {
 
   constructor(props) {
     super(props);
+    console.log('');
   }
 
   componentDidMount() {
@@ -227,6 +230,6 @@ export default class BarChart extends PureComponent<any, any> {
   }
 
   render() {
-    return <div ref={chartDom => this.chartDom = chartDom} {...this.props}></div>
+    return <div ref={chartDom => this.chartDom = chartDom} {...filterProp(this.props, 'callback')}></div>
   }
 }

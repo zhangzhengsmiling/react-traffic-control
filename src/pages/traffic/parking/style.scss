@@ -1,0 +1,193 @@
+.parking {
+  .marker-parking {
+    width: auto;
+    height: auto;
+    // background: red;
+    transform: translate(-50%, -100%);
+    position: relative;
+    .circle {
+      width: 40px;
+      height: 40px;
+      background: red;
+      border-radius: 50%;
+      padding: 5px;
+    }
+    .bar {
+      width: 4px;
+      height: 40px;
+      background: rgb(89, 150, 167);
+      // position: absolute;
+      margin-left: 50%;
+      transform: translateX(-50%);
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgb(89, 150, 167);
+      margin-left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+  .parking-drawer {
+    width: 100%;
+    height: 100%;
+    background: rgb(9, 21, 42);
+    .seq-list {
+      width: 100%;
+      height: auto;
+      color: #fff; 
+      .list-title {
+        color: rgb(136, 180, 219);
+        background: rgba(25, 48, 92, 0.4);
+        padding: 5px 10px;
+      }
+      .list-body {
+        overflow-y: scroll;
+        width: 100%;
+        height: auto;
+        max-height: 270px;
+        .list-item {
+          color: #fff;
+          background: rgb(25, 48, 92);
+          margin: 5px 0;
+          padding: 5px 10px;
+          &:last-child{
+            margin: 0;
+          }
+          &:first-child {
+            margin: 0;
+          }
+        }
+      }
+      .left {
+        text-align: left;
+      }
+      .middle {
+        text-align: center;
+      }
+      .right {
+        text-align: right;
+      }
+    }
+  }
+}
+
+.annular {
+  margin-left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 100px;
+  text-align: center;
+  position: relative;
+  .annular-out {
+    right: 0;
+    top: 0;
+    position: absolute;
+    border-radius: 50%;
+    border: 10px solid hotpink;
+    clip: rect(auto, 400px, auto, auto);
+    bottom: 0;
+    left: 0;
+    transform: rotate(90deg);
+    animation: circle-anim 1s ease 1;
+  }
+  .annular-in {
+    .text-linear {
+      line-height: 100px;
+      text-align: center;
+      font-weight: 800;
+      font-size: 28px;
+      background: linear-gradient(to top, rgb(84, 143, 160), blue);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+  }
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 10px solid #9cf;
+    border-radius: 50%;
+  }
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    border: 10px solid #9cf;
+    border-radius: 50%;
+    clip: rect(auto, 50px, auto, auto);
+  }
+}
+
+@keyframes circle-anim {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(90deg);
+  }
+}
+
+.parking-infowindow {
+  width: auto;
+  height: auto;
+  color: #fff;
+  padding: 10px;
+  .parking-infowindow-title {
+    width: 400px;
+    font-size: 20px;
+    color: #fff;
+    font-weight: 500;
+    text-align: center;
+  }
+  .parking-infowindow-container {
+    width: 100%;
+    height: auto;
+    background: rgba(9, 21, 42, 0.2);
+    margin-top: 10px;
+    padding: 16px;
+  }
+  .sub-title {
+    font-size: 16px;
+    color: rgb(25, 93, 169);
+    font-weight: 600; 
+  }
+  #percent-chart {
+    width: 100%;
+    height: 200px;
+  }
+  #line-chart {
+    width: 100%;
+    height: 200px;
+    margin-top: 10px;
+  }
+  .flex {
+    display: flex;
+  }
+  .parking-overview {
+    .item {
+      flex: 1;
+      text-align: center;
+      .label {
+        text-align: center;
+        color: rgb(132, 193, 255);
+        font-size: 16px;
+        font-weight: 600;
+      }
+      .value {
+        text-align: center;
+        color: #fff;
+        font-size: 24px;
+        font-weight: 600;
+        text-shadow: 1px 1px 10px rgb(132, 193, 255);
+      }
+    }
+  }
+}

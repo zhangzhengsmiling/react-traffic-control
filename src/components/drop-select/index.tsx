@@ -3,6 +3,8 @@ import { Dropdown, Menu, Button } from 'antd';
 import { CaretDownOutlined } from '@ant-design/icons';
 import _ from 'lodash';
 
+import Iconfont from '../../components/iconfont';
+
 import './style.scss';
 
 // const { Button } = Dropdown;
@@ -19,12 +21,12 @@ const DropSelect = (props: IPropsDropSelect) => {
   const menu = props.menu;
   const placeholder = props.placeholder || DEFALT_PLACEHOLDER;
   // const initSelect = menu.find(item => item.key === )
-  const initSelect = menu.find(item => item.key === props.filterOption);
-  const [select, setSetlect] = useState(undefined);
+  // const initSelect = menu.find(item => item.key === props.filterOption);
+  const [select, setSekect] = useState(undefined);
   const handleMenuClick = (e) => {
     const key = e.key;
-    const value = menu.find(item => item.key === key);
-    setSetlect(prev => value);
+    const value = menu.find(item => item.key == key);
+    setSekect(prev => value);
   }
   useEffect(() => {
     if(_.isFunction(props.onChange) && select) {
@@ -35,11 +37,9 @@ const DropSelect = (props: IPropsDropSelect) => {
       {
         menu.map((item) => 
           <Menu.Item key={item.key}>
-            <svg style={{ marginRight:'10px' }} width="8" height="8">
-              {
-                item.icon ? item.icon : ''
-              }
-            </svg>
+            {
+              item.icon ? item.icon : ''
+            }
             {item.value}
           </Menu.Item>
         )

@@ -1,5 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component, useReducer } from 'react';
 import _ from 'lodash';
+
+import filterProp from '../../utils/filterProp';
 
 interface IPropCountDown {
   start?: number;
@@ -10,6 +12,7 @@ interface IPropCountDown {
   style?: any;
   className?: string;
 }
+
 
 export default class CountDown extends Component<IPropCountDown, any> {
 
@@ -95,7 +98,7 @@ export default class CountDown extends Component<IPropCountDown, any> {
     return (
       <>
         {
-          <span {...this.props}>
+          <span {...filterProp(this.props, 'mapfn')}>
             {
               (mapfn && _.isFunction(mapfn)) ? mapfn(this.state.counter) : this.state.counter
             }

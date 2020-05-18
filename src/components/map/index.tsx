@@ -127,6 +127,9 @@ export default class Map extends React.Component<IPropsMap, {}> {
       pitch,
       layers,
     });
+    // if(_.isFunction(this.props.onUpdate)) {
+    //   this.props.onUpdate();
+    // }
   }
 
   componentWillUnmount() {

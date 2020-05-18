@@ -13,9 +13,10 @@
 }
 
 .radial {
-  width:20px;
-  height:20px;
-  // border-radius:50%;
+  position: relative;
+  width:40px;
+  height:40px;
+  border-radius:50%;
   background-color:rgb(255, 92, 72);
   // margin:80px;
 }
@@ -24,9 +25,9 @@
   display:block;
   left:0;
   top:0;
-  width:20px;
-  height:20px;
-  // border-radius:50%;
+  width:40px;
+  height:40px;
+  border-radius:50%;
 }
 
 .radial:after { /*鼠标入的时候，伪类元素的动画开始，动画名称就是下面@keyframes定义的radial-red */
@@ -122,12 +123,13 @@
   // background-color: greenyellow;
   .amap-info-content {
     background-color: rgb(25, 48, 92);
+    // padding: ;
     .amap-info-close {
       color: #fff8;
       position: absolute;
       left: 100%;
       top: 0;
-      transform: translateX(-100%);
+      transform: translate(-150%, 50%);
     }
     .amap-info-close:hover {
       color: #fffc;

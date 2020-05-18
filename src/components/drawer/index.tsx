@@ -25,7 +25,7 @@ const Drawer = (props) => {
       setPosition(() => 0)
     }
   }, [props.show])
-  return <div 
+  return <div
     style={{ 
       width,
       height,
