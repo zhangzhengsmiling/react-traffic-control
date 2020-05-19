@@ -1,0 +1,14 @@
+.data-overview {
+  display: flex;
+  .item {
+    flex: 1;
+    .label {
+      color: #fff;
+      text-align: center;
+    }
+    .value {
+      color: #fff;
+      text-align: center;
+    }
+  }
+}
