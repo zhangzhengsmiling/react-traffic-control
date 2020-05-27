@@ -1,0 +1,22 @@
+.intersection-item {
+  width: 100%;
+  height: 266px;
+  background: rgb(17, 34, 67);
+  padding: 13px;
+  margin-top: 20px;
+  &:first {
+    margin-top: 0;
+  }
+
+  .intersection-title {
+    width: 100%;
+    height: 40px;
+    color: #fff;
+    line-height: 40px;
+    font-size: 20px;
+  }
+  .intersection-body {
+    width: 100%;
+    height: 200px;
+  }
+}

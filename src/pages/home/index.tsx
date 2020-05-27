@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import GMap from '../../components/map';
 
 import TitleBlock from '../../components/title-block';
@@ -8,9 +8,11 @@ import RotatePie from '../../components/rotate-pie';
 import DataOverview from '../../components/data-overview';
 import LineChart from '../../components/line-chart';
 import RatioBar from '../../components/ratio-bar';
+import IntersectionItem from './intersection-item';
 // import ContainerBox from '../../components/container-box';
 
 import './style.scss';
+import { message } from 'antd';
 
 const CENTER_XIXISHIDI: [number, number] = [120.046033, 30.270448];
 const colorMap = new Map([
@@ -26,6 +28,19 @@ const colors = [
   'rgb(236, 236, 255)',
 ]
 
+const levelMap = new Map([
+  ['1', '紧急'],
+  ['2', '严重'],
+  ['3', '一般'],
+  ["4", '轻微'],
+]);
+
+const typeMap = new Map([
+  ['1', '交通事故'],
+  ['2', '交通拥堵'],
+  ['3', '设备故障'],
+  ['4', '天气异常'],
+]);
 
 const label = (l: string) => <div style={{ fontSize: '20px', color: 'rgb(132, 193, 255)', verticalAlign: 'middle' }}>
   <div style={{ display: 'inline-block', width: '10px', height: '10px', borderRadius: '50%', background: colorMap.get(l), margin: '0 8px' }} />
@@ -38,14 +53,65 @@ const parkingValue = (v: string | number) => <div style={{ fontSize: '24px', col
 
 const Home = (props:any) => {
   const center: [number, number] = CENTER_XIXISHIDI ;
-  const alertOverview = [
-    { label: '紧急', value: 0.25 },
-    { label: '严重', value: 0.25 },
-    { label: '一般', value: 0.25 },
-    { label: '轻微', value: 0.25 },
-  ]
-  // const match = props.match;
-  return <div style={{ width: '100vw', height: '100vh', background: 'rgb(0, 0, 1)' }}>
+  const [levelOverview, setLevelOverview] = useState([]);
+  const [typeOverview, setTypeOverview] = useState(new Array(4).fill({ label: '--', value: 0 }));
+  const [intersections, setIntersections] = useState([]);
+  useEffect(() => {
+    fetch('/alert/level_overview').then(res => res.json())
+      .then(res => {
+        console.log(res);
+        const { result, data, messagee } = res;
+        if(result) {
+          const total = Object.keys(data).reduce((temp, cur) => {
+            return temp + data[cur];
+          }, 0);
+          const levelOverview = Object.keys(data).map(key => ({
+            label: levelMap.get(key),
+            value: Math.round(data[key] / total * 100) / 100,
+          }))
+          setLevelOverview(levelOverview);
+        } else {
+          message.error(message);
+        }
+      })
+      .catch(err => message.error(err.message));
+
+    fetch('/alert/type_overview').then(res => res.json())
+      .then(res => {
+        const { result, data, message } = res;
+        if(result) {
+          // setTypeOverview()
+          const total = Object.keys(data).reduce((temp, cur) => {
+            return temp + data[cur];
+          }, 0);
+          const typeOverview = Object.keys(data).map(key => ({
+            label: typeMap.get(key),
+            value: Math.round(data[key] / total * 100) / 100,
+          }))
+          setTypeOverview(typeOverview);
+        } else {
+          message.error(message);
+        }
+      })
+      .catch(err => message.error(err.message))
+
+    fetch('/jam/intersection').then(res => res.json())
+      .then(res => {
+        console.log(res);
+        // if()
+        const { result, data, message } = res;
+        if(result) {
+          const intersections = data.sort((a, b) => b.flow_count - a.flow_count).slice(0, 3);
+          setIntersections(intersections);
+        } else {
+          message.error(message);
+        }
+      })
+      .catch(err => message.error(message));
+
+  }, [])
+
+return <div style={{ width: '100vw', height: '100vh', background: 'rgb(0, 0, 1)' }}>
     <GMap
       appKey="264957655c49306d2b11298a1f30cabf"
       style={{
@@ -60,7 +126,6 @@ const Home = (props:any) => {
       zoom={14}
       layers={[]}
     >
-      
     </GMap>
     <TitleBlock />
     <div style={{ width: '100%', height: '90vh', background: 'rgba(9, 21, 42, 0.6)', position: 'absolute', display: 'flex', padding: '20px' }}>
@@ -71,23 +136,27 @@ const Home = (props:any) => {
           }}>告警管理</span>
         </div>
         <div style={{ width: '40%', height: '4px', background: 'greenyellow', marginLeft: '50%', transform: 'translateX(-50%)' }}>
-          <div style={{ float: 'left', width: '50%', height: '4px', background: 'linear-gradient(to right, rgb(9, 21, 42), rgb(82, 140, 157))' }}></div>
-          <div style={{ float: 'left', width: '50%', height: '4px', background: 'linear-gradient(to left, rgb(9, 21, 42), rgb(82, 140, 157))' }}></div>
+          <div style={{ float: 'left', width: '50%', height: '4px', background: 'linear-gradient(to right, rgb(9, 21, 42), rgb(82, 140, 157))' }} />
+          <div style={{ float: 'left', width: '50%', height: '4px', background: 'linear-gradient(to left, rgb(9, 21, 42), rgb(82, 140, 157))' }} />
         </div>
         <div style={{ width: '100%', height: 'auto', background: 'rgba(25, 48, 92, 0.5)', padding: '10px 0', marginTop: '20px', borderRadius: '5px' }}>
-          <RotatePie data={alertOverview} colors={colors} />
-          <DataOverview style={{ marginTop: '10px' }} overview={alertOverview.map(item => ({ 
-              label: label(item.label),
-              value: value(item.value),
-            }))
-          } />
+          <RotatePie data={levelOverview} colors={colors} />
+          <DataOverview
+            style={{ marginTop: '10px' }}
+            overview={levelOverview.map(item => ({ 
+                label: label(item.label),
+                value: value(item.value),
+              }))
+            }
+          />
         </div>
         <div style={{ width: '100%', height: '400px', background: 'rgba(25, 48, 92, 0.5)', padding: '10px 0', marginTop: '20px', borderRadius: '5px' }}>
-          <WaveChart />
+          <WaveChart    
+            data = {typeOverview}/>
         </div>
       </ContainerAnt>
       <ContainerAnt style={{ width: '40%' }}>
-      <div style={{ width: '100%', height: '40px', textAlign: 'center' }}>
+        <div style={{ width: '100%', height: '40px', textAlign: 'center' }}>
           <span className="font-block" style={{ fontSize: '22px', fontWeight: 500 }} onClick={() => {
             props.history.push('/traffic/jam');
           }}>交通拥堵</span>
@@ -96,71 +165,25 @@ const Home = (props:any) => {
           <div style={{ float: 'left', width: '50%', height: '4px', background: 'linear-gradient(to right, rgb(9, 21, 42), rgb(82, 140, 157))' }}></div>
           <div style={{ float: 'left', width: '50%', height: '4px', background: 'linear-gradient(to left, rgb(9, 21, 42), rgb(82, 140, 157))' }}></div>
         </div>
-
         <div style={{ width: '100%', height: '100%', marginTop: '20px' }}>
-          <div style={{ width: '100%', height: '266px', background: 'rgb(17, 34, 67)', padding: '13px' }}>
-            <div style={{ width: '100%', height: '40px', color: '#fff', lineHeight: '40px', fontSize: '20px' }}>路口名称</div>
-            <div style={{ width: '100%', height: '200px' }}>
-              <div style={{width: '30%', height: '100%', float: 'left', position: 'relative' }}>
-                <div style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }}>
-                  <div style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '20px', fontWeight: 600, textAlign: 'center' }}>路口流量</div>
-                  <div style={{ color: '#fff', fontSize: '28px', fontWeight: 600, textAlign: 'center' }}>300</div>
-                </div>
-              </div>
-              <div style={{ width: '70%', height: '100%', float: 'left', borderLeft: '1px solid green' }}>
-                <div style={{ width: '100%', height: '20px', fontSize: '14px', lineHeight: '20px', color: '#fff', paddingLeft: '15px' }}>路口流量变化趋势</div>
-                <div style={{ width: '100%', height: '180px' }}>
-                  <LineChart style={{ width: '100%', height: '100%' }} />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div style={{ width: '100%', height: '266px', background: 'rgb(17, 34, 67)', padding: '13px', marginTop: '20px' }}>
-            <div style={{ width: '100%', height: '40px', color: '#fff', lineHeight: '40px', fontSize: '20px' }}>路口名称</div>
-            <div style={{ width: '100%', height: '200px' }}>
-              <div style={{width: '30%', height: '100%', float: 'left', position: 'relative' }}>
-                <div style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }}>
-                  <div style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '20px', fontWeight: 600, textAlign: 'center' }}>路口流量</div>
-                  <div style={{ color: '#fff', fontSize: '28px', fontWeight: 600, textAlign: 'center' }}>300</div>
-                </div>
-              </div>
-              <div style={{ width: '70%', height: '100%', float: 'left', borderLeft: '1px solid green' }}>
-                <div style={{ width: '100%', height: '20px', fontSize: '14px', lineHeight: '20px', color: '#fff', paddingLeft: '15px' }}>路口流量变化趋势</div>
-                <div style={{ width: '100%', height: '180px' }}>
-                  <LineChart style={{ width: '100%', height: '100%' }} />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div style={{ width: '100%', height: '266px', background: 'rgb(17, 34, 67)', padding: '13px', marginTop: '20px' }}>
-            <div style={{ width: '100%', height: '40px', color: '#fff', lineHeight: '40px', fontSize: '20px' }}>路口名称</div>
-            <div style={{ width: '100%', height: '200px' }}>
-              <div style={{width: '30%', height: '100%', float: 'left', position: 'relative' }}>
-                <div style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }}>
-                  <div style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '20px', fontWeight: 600, textAlign: 'center' }}>路口流量</div>
-                  <div style={{ color: '#fff', fontSize: '28px', fontWeight: 600, textAlign: 'center' }}>300</div>
-                </div>
-              </div>
-              <div style={{ width: '70%', height: '100%', float: 'left', borderLeft: '1px solid green' }}>
-                <div style={{ width: '100%', height: '20px', fontSize: '14px', lineHeight: '20px', color: '#fff', paddingLeft: '15px' }}>路口流量变化趋势</div>
-                <div style={{ width: '100%', height: '180px' }}>
-                  <LineChart style={{ width: '100%', height: '100%' }} />
-                </div>
-              </div>
-            </div>
-          </div>
-
+          {
+            intersections.map((item, index) => <IntersectionItem
+              target={item}
+              key={`intersection-${index}`}
+              title={item.name} intersectionFlow={item.flow_count}
+            />)
+          }
         </div>
         
       </ContainerAnt>
       <ContainerAnt style={{ width: '30%' }}>
         {/* <div style={{ width: '100%', height: '40px', background: 'red' }}></div> */}
         <div style={{ width: '100%', height: '40px', textAlign: 'center' }}>
-          <span className="font-block" style={{ fontSize: '22px', fontWeight: 500 }} onClick={() => {
-            props.history.push('/traffic/parking');
-          }}>停车场管理</span>
+          <span 
+            className="font-block"
+            style={{ fontSize: '22px', fontWeight: 500 }}
+            onClick={() => props.history.push('/traffic/parking')}
+          >停车场管理</span>
         </div>
         <div style={{ width: '40%', height: '4px', background: 'greenyellow', marginLeft: '50%', transform: 'translateX(-50%)' }}>
           <div style={{ float: 'left', width: '50%', height: '4px', background: 'linear-gradient(to right, rgb(9, 21, 42), rgb(82, 140, 157))' }}></div>
@@ -168,20 +191,21 @@ const Home = (props:any) => {
         </div>
 
         {
-          new Array(4).fill('').map(() => {
-            return <div style={{ width: '100%', height: '195px', background: 'rgb(17, 34, 67)', marginTop: '20px', position: 'relative' }}>
+          new Array(4).fill('').map(() => [
+            { label: '总车位数', value: 125 + Math.floor(Math.random() * 20)},
+            { label: '剩余车位数', value: 44 + Math.floor(Math.random() * 30) },
+            { label: '当日入闸数', value: 226 + Math.floor(Math.random() * 30) },
+            { label: '当日出闸数', value: 126  + Math.floor(Math.random() * 30) },
+          ]).sort((a, b) => (b[0].value - b[1].value) / b[0].value - (a[0].value - a[1].value) / a[0].value).map((item, index) => {
+            // const overviewData = 
+            return <div key={index} style={{ width: '100%', height: '195px', background: 'rgb(17, 34, 67)', marginTop: '20px', position: 'relative' }}>
               <div style={{ width: '100%', height: 'auto', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', position: 'absolute' }}>
-                <div style={{ width: '100%', height: '40px', color: 'rgba(255, 255, 255, 0.5)', fontSize: '28px', marginLeft: '10px', marginBottom: '10px' }}>title</div>
-                <DataOverview overview={[
-                  { label: '总车位数', value: 125 },
-                  { label: '剩余车位数', value: 44 },
-                  { label: '当日入闸数', value: 226 },
-                  { label: '当日出闸数', value: 126 },
-                ].map(item => ({
+                <div style={{ width: '100%', height: '40px', color: 'rgba(255, 255, 255, 0.5)', fontSize: '28px', marginLeft: '10px', marginBottom: '10px' }}> {`停车场${index + 1}`} </div>
+                <DataOverview overview={item.map(item => ({
                   label: parkingLabel(item.label),
                   value: parkingValue(item.value),
                 }))} />
-                <RatioBar />
+                <RatioBar ratio={Math.round((item[0].value - item[1].value) / item[0].value  * 100) / 100} />
               </div>
             </div>
           })

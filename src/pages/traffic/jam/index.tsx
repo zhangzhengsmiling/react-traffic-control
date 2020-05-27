@@ -1,10 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { Row, Col } from 'antd';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Row, Col, message } from 'antd';
+// import { renderToString } from 'react-dom/server';
+import moment from 'moment';
 
 import BarChart from '../../../components/bar-chart';
 import CountDown from '../../../components/count-down';
 import GMap from '../../../components/map';
 import Drawer from '../../../components/drawer';
+import Marker from '../../../components/map/marker';
+
 
 import "./style.scss";
 
@@ -15,24 +19,23 @@ const CENTER_XIXISHIDI: [number, number] = [120.046033, 30.270448];
 
 let _map = null;
 
-const deviceOverview =  {
-  legend: ['车流量'],
-  xAxis: ['路口1', '路口2', '路口3', '路口4'],
-  yAxis: [
-    'count'
-  ],
-  data: [
-    [400, 482, 634, 588],
-    // [483, 2, 3, 4],
-    // [622, 6, 7, 8],
-  ]
-}
+// const deviceOverview =  {
+//   legend: ['车流量'],
+//   xAxis: ['路口1', '路口2', '路口3', '路口4'],
+//   yAxis: [
+//     'count'
+//   ],
+//   data: [
+//     [400, 482, 634, 588]
+//   ]
+// }
 
 const flowDetail = {
-  roadName: '路口1',
-  peakField: '8:00 - 9:00',
-  peakValue: 200,
+  roadName: '--',
+  peakField: '----',
+  peakValue: 1,
 }
+
 
 const renderHeatMap = (map, heatMapData) => {
   const layer = new Loca.HeatmapLayer({
@@ -72,36 +75,109 @@ const genRandomHotMap = (amount) => {
   })
 }
 
+const color = [
+  [ { offset: 0, color: 'rgb(238, 89, 72)' }, { offset: 1, color: 'rgba(238, 89, 72, 0)'} ],
+  [ { offset: 0, color: 'rgb(230, 174, 62)' }, { offset: 1, color: 'rgba(230, 174, 62, 0)' } ] ,
+  [ { offset: 0, color: 'rgb(28, 195, 179)' }, { offset: 1, color: 'rgba(28, 195, 179, 0)' } ]
+];
+
+const style = { width: '360px', height: '200px', background: 'rgb(25, 48, 92)' };
+
 const Jam = (props) => {
   const [detail, setDetail] = useState(flowDetail);
   const [layers, setLayers] = useState([]);
-  const [gMapOption] = useState({ center: CENTER_XIXISHIDI, zoom: 14 });
+  const [gMapOption, setGMapOption] = useState({ zoom: 14 });
   const [heatMapData, setHeatMapData] = useState([]);
-
+  const [barChartData, setBarChartData] = useState({ legend: [], xAxis: [], yAxis: [], data: [[]]});
+  const [details, setDetails] = useState([])
+  const [intersections, setIntersections] = useState([]);
 
   useEffect(() => {
-    const heatMapData = genRandomHotMap(200);
-    fetch('/mock/heatmap.json')
-      .then(res => res.json())
+    fetch('/jam/intersection').then(res => res.json())
       .then(res => {
-        setHeatMapData(heatMapData);
+        const { data, result, message } = res;
+        if(result) {
+          setIntersections(data);
+          const barChartData =  {
+            legend: ['车流量'],
+            xAxis: data.map(item => item.name),
+            yAxis: [
+              'count'
+            ],
+            data: [
+              data.map(item => item.flow_count),
+            ]
+          }
+          setBarChartData(barChartData);
+          const heatMapData = genRandomHotMap(200)
+          setHeatMapData(heatMapData);
+          return data;
+        } else {
+          message.error(message);
+          return undefined;
+        }
       })
+      .then(data => {
+        if(data) {
+          const details = Promise.all(
+            data.map(item => fetch(`/jam/intersection_flow?id=${item.id}&date=${moment().format('YYYY-MM-DD')}`)
+              .then(res => res.json()))
+          )
+          return details;
+        }
+        return undefined;
+      })
+      .then(data => {
+        if(data) {
+          console.log('line 130-----')
+          console.log(data);
+        }
+      })
+      .catch(err => message.error(err.message));
+
+  }, [])
+  
+  const callback = useCallback((index, target) => {
+    console.log(index)
+    setDetail(prev => {
+      let details = [];
+      setDetails(prev => {
+        details = prev;
+        // console.log(details)
+        return prev;
+      })
+      return details[index]
+    })
+    setHeatMapData(prev => {
+      renderHeatMap(_map, prev);
+      return prev;
+    })
+    // setDetails
+  }, ['heatMapData'])
+
+  useEffect(() => {
+    setTimeout(() => {
+      setDetails([{
+        roadName: '路口1',
+        peakField: '09:00 - 10:00',
+        peakValue: 1829,
+      },{
+        roadName: '路口2',
+        peakField: '8:00 - 9:00',
+        peakValue: 1999,
+      },{
+        roadName: '路口3',
+        peakField: '8:00 - 9:00',
+        peakValue: 4250,
+      },{
+        roadName: '路口4',
+        peakField: '11:00 - 12:00',
+        peakValue: 600,
+      }])
+    }, 1000)
   }, [])
 
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     setDetail(prev => ({
-  //       ...prev,
-  //       roadName: '路口' + Math.random(),
-  //     }))
-  //     // console.log(_map, data)
-  //     // renderHeatMap(_map, heatMapData);
-  //   }, 3000);
-  //   return () => {
-  //     clearInterval(interval)
-  //   }
-  // }, []);
-  return <>
+  return <div className="jam">
     <GMap
       appKey="264957655c49306d2b11298a1f30cabf"
       className="g-map"
@@ -116,10 +192,83 @@ const Jam = (props) => {
       }}
       viewMode="3D"
       pitch={50}
-      center={gMapOption.center}
+      center={CENTER_XIXISHIDI}
       zoom={gMapOption.zoom}
       layers={layers}
-    />
+      onZoomEnd={(option) => {
+        setGMapOption({
+          ...gMapOption,
+          zoom: option.zoom,
+        })
+      }}
+    >
+      {/* {
+      intersections
+          // .filter(item => item.position)
+          .map((item, index) => <Marker
+          key={`intersection-${index}`}
+          position={CENTER_XIXISHIDI}
+          content={
+            <div className="marker-intersection">
+              <div className="circle" style={{ background: 'red'}} >
+                <div style={{ width: '100%', height: '100%', background: 'rgb(22, 55, 101)', borderRadius: '50%', lineHeight: '30px', textAlign: 'center', color: '#fff', fontSize: '20px' }}>P</div>
+              </div>
+              <div className="bar" />
+              <div className="dot" />
+            </div>
+          }
+          onClick={(e, map) => {
+
+            console.log(item.position)
+            var infoWindow = new AMap.InfoWindow({
+              anchor: 'middle-left',
+              content: renderToString(<div className="parking-infowindow">
+                <div className="parking-infowindow-title"> {item.name} </div>
+                <div className="parking-infowindow-container flex parking-overview">
+                  <div className="item">
+                    <div className="label">总车位数</div>
+                    <div className="value"> 1 </div>
+                  </div>
+                  <div className="item">
+                    <div className="label">剩余车位数</div>
+                    <div className="value"> 2 </div>
+                  </div>
+                  <div className="item">
+                    <div className="label">当日入闸数</div>
+                    <div className="value"> 3 </div>
+                  </div>
+                  <div className="item">
+                    <div className="label">当日出闸数</div>
+                    <div className="value"> 4 </div>
+                  </div>
+                </div>
+                <div className="parking-infowindow-container">
+                  <span className="sub-title">停车场饱和度</span>
+                  <div id="percent-chart" />
+                </div>
+                <div className="parking-infowindow-container">
+                  <span className="sub-title">停车场出入闸趋势</span>
+                  <div id="line-chart" />
+                </div>
+              </div>),
+              offset: { x: 15, y: -100 }
+            });
+            infoWindow.open(map, item.position);
+            // setTimeout(() => {
+            //   const percentChart = document.querySelector('#percent-chart');
+            //   const lineChart = document.querySelector('#line-chart');
+            //   if(percentChart) {
+            //     renderPercentChart(percentChart, saturation);
+            //   }
+            //   if(lineChart) {
+            //     renderLineChart(lineChart);
+            //   }
+            // }, 50)
+          }}
+        />
+          )
+      } */}
+    </GMap>
     <Drawer
       show={true}
       style={{ width: '400px', height: '800px', background: 'rgba(9, 21, 42, 0.8)', top: '12vh', padding: '20px' }}
@@ -137,16 +286,16 @@ const Jam = (props) => {
           </div>
           <div style={{ height: '160px', overflowY: 'scroll' }}>
             {
-              heatMapData
-                .filter(item => item.queue_len > 180)
+              intersections
+                // .filter(item => item.queue_len > 180)
                 .sort((a, b) => b.queue_len - a.queue_len)
-                .slice(0, 10)
+                // .slice(0, 10)
                 .map((item, index) => {
                 return <div className="heat-item" key={`heat-item-${index}`}>
                   <Row>
-                    <Col className="left" span="6"> {index} </Col>
-                    <Col className="middle" span="12"> {item.inter_name} </Col>
-                    <Col className="right" span="6" style={{ textAlign: 'right' }}> {item.queue_len} </Col>
+                    <Col className="left" span="6"> {index + 1} </Col>
+                    <Col className="middle" span="12"> {item.name} </Col>
+                    <Col className="right" span="6" style={{ textAlign: 'right' }}> {item.flow_count} </Col>
                   </Row>
                 </div>
               })
@@ -158,20 +307,10 @@ const Jam = (props) => {
         {/* <div></div> */}
         <div>
         <BarChart
-            style={{ width: '360px', height: '200px', background: 'rgb(25, 48, 92)' }}
-            data={deviceOverview}
-            color={[
-              [ { offset: 0, color: 'rgb(238, 89, 72)' }, { offset: 1, color: 'rgba(238, 89, 72, 0)'} ],
-              [ { offset: 0, color: 'rgb(230, 174, 62)' }, { offset: 1, color: 'rgba(230, 174, 62, 0)' } ] ,
-              [ { offset: 0, color: 'rgb(28, 195, 179)' }, { offset: 1, color: 'rgba(28, 195, 179, 0)' } ]
-            ]}
-            callback={(a, b) => {
-              renderHeatMap(_map, heatMapData);
-              setDetail(prev => ({
-                ...prev,
-                roadName: b.x,
-              }))
-          }}
+            style={style}
+            data={barChartData}
+            color={color}
+            callback={callback}
           />
           <div style={{ width: '100%', height: '260px' }}>
             <div style={{ color: '#fff', fontSize: '16px', marginTop: '12px' }}> {detail.roadName} </div>
@@ -217,7 +356,7 @@ const Jam = (props) => {
         </div>
       </div>
     </Drawer>
-  </>
+  </div>
 }
 
 export default Jam;

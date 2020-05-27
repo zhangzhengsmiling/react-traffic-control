@@ -38,7 +38,7 @@ export default class CountDown extends Component<IPropCountDown, any> {
     if(!this.state.lock) this.roll(start, value, time, ticks);
   }
 
-  roll = (start = 0, end = 10000, time = 3000, ticks = 200) => {
+  roll = (start = 0, end = 10000, time = 1000, ticks = 200) => {
     // const start = start || 0,
     //       end = value || 10000,
     //       time = time || 3000,

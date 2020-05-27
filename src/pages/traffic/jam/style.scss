@@ -45,4 +45,35 @@
       }
     }
   }
+
+  .marker-intersection {
+    width: auto;
+    height: auto;
+    // background: red;
+    transform: translate(-50%, -100%);
+    position: relative;
+    .circle {
+      width: 40px;
+      height: 40px;
+      background: red;
+      border-radius: 50%;
+      padding: 5px;
+    }
+    .bar {
+      width: 4px;
+      height: 40px;
+      background: rgb(89, 150, 167);
+      // position: absolute;
+      margin-left: 50%;
+      transform: translateX(-50%);
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgb(89, 150, 167);
+      margin-left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
 }

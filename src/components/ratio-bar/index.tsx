@@ -7,7 +7,7 @@ export default class RatioBar extends React.Component<any> {
   chart: any = null;
 
   componentDidMount() {
-    var cost = [80]//本期比上期（大于1按1处理）
+    var cost = [this.props.ratio * 100 || 0]//本期比上期（大于1按1处理）
     var dataCost = [10.01]//真是的金额
     var totalCost = [100]//比例综合
     var visits = [24]//本期占总的百分比*100
@@ -81,7 +81,6 @@ export default class RatioBar extends React.Component<any> {
         },
         z: 1,
         data: data.totalCost,
-          // data: da
       }, {
         type: 'bar',
         barGap: '-85%',
@@ -100,7 +99,10 @@ export default class RatioBar extends React.Component<any> {
           normal: {
             show: true,
             position: 'inside',
-            formatter: '{c}%'
+            formatter: (target) => {
+              console.log()
+              return Math.round(target.value) + '%';
+            }
           }
         },
         labelLine: {

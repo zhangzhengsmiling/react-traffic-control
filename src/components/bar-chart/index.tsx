@@ -3,11 +3,13 @@ import * as echarts from 'echarts';
 import _ from 'lodash';
 
 import filterProp from '../../utils/filterProp';
+import withPureRender from '../../hocs/withPureRender';
 
 import './style.scss';
 
 const limitWidth = 1700;
 
+@withPureRender
 export default class BarChart extends PureComponent<any, any> {
 
   chartDom = null;
@@ -19,8 +21,8 @@ export default class BarChart extends PureComponent<any, any> {
     console.log('');
   }
 
-  componentDidMount() {
-    let { color, data } = this.props;
+  init = (props: any) => {
+    let { color, data } = props;
     color = color.map(item => {
       if(_.isArray(item)) {
         return new echarts.graphic.LinearGradient(0, 0, 0, 1, item)
@@ -45,20 +47,21 @@ export default class BarChart extends PureComponent<any, any> {
         const fontSize = this.fontSize(14);
         const option = this.getOption(data, color, fontSize);
         const dataLen = option.series[0].data.length;
-        if(clientWidth <= limitWidth) {
+        if(dataLen >= 5) {
           const dataZooms = [
             { start: 0, end: 30 },
-            { start: 20, end: 50 },
-            { start: 60, end: 90 },
+            { start: 25, end: 60 },
+            { start: 60, end: 100 },
           ]
           idx = (idx + 1) % 3;
           option.dataZoom.start = dataZooms[idx].start;
           option.dataZoom.end = dataZooms[idx].end;
-        } else {
+        } 
+        else {
           option.dataZoom.start = 0;
           option.dataZoom.end = 100;
           // clearInterval(this.intervalId)
-          idx = (idx + 1) % 4;
+          idx = (idx + 1) % dataLen;
           // 取消之前高亮的图形
           this.chart.dispatchAction({
             type: 'downplay',
@@ -88,6 +91,7 @@ export default class BarChart extends PureComponent<any, any> {
           x: data.xAxis[idx],
           y: data.data.map(item => item[idx]),
         }
+        console.log('target', target)
         this.intervalCallback(idx, target);
       }, 3000);
       window.addEventListener('resize', () => {
@@ -119,14 +123,14 @@ export default class BarChart extends PureComponent<any, any> {
     const clientWidth = document.documentElement.clientWidth;
     let initDataZoom = {
       start: 0,
-      end: 100,
+      end: 30,
     }
-    if(clientWidth <= limitWidth) {
-      initDataZoom = {
-        start: 0,
-        end: 30,
-      }
-    }
+    // if(clientWidth <= limitWidth) {
+    //   initDataZoom = {
+    //     start: 0,
+    //     end: 30,
+    //   }
+    // }
     return {
       // backgroundColor:'#323a5e',
         tooltip: {
@@ -220,7 +224,17 @@ export default class BarChart extends PureComponent<any, any> {
         data: item,
       }))
     };
+  }
 
+  componentDidMount() {
+    clearInterval(this.intervalId);
+    this.init(this.props);
+
+  }
+
+  componentWillReceiveProps(nextProps) {
+    clearInterval(this.intervalId);
+    this.init(nextProps);
   }
 
   intervalCallback = (index: number, target:any) => {

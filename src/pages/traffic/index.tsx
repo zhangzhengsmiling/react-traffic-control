@@ -24,17 +24,6 @@ interface IPropsTraffic {
 
 let _map = null;
 
-// const computeOffset = (r, angel) => {
-//   const theta = angel / 180 * Math.PI;
-//   const x = r * (1 - Math.cos(theta));
-//   const y = r * Math.sin(theta);
-//   // alert(Math.sin(theta));
-//   return {
-//     x,
-//     y,
-//   }
-// }
-
 const parseKeyFromPath = (path:string) => {
   const target = path.split('/');
   return target[target.length - 1];

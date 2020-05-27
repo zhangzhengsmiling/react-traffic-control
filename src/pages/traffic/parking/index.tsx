@@ -55,8 +55,16 @@ const renderPercentChart = (domContainer: Element, value: number = 0.555) => {
 const renderLineChart = (domContainer: Element) => {
   const data = [281.55, 398.35, 214.02, 179.55, 289.57, 356.14, ];
   const dataOut = [160.55, 228.35, 114.02, 109.55, 119.57, 156.14, ];
-  const xAxis = ['A', 'B', 'C', 'D', 'E', 'F'];
+  const xAxis = ['01:00', '02:00', '03:00', '04:00', '05:00', '06:00'];
   const option = {
+    // legend:  {
+    //   data: ['出闸数', '入闸数'],
+    //   textStyle: {
+    //     // strokeStyle: '#fff',
+    //     color: '#fff'
+    //   },
+    //   // top: 0
+    // },
     tooltip: {
       trigger: 'axis',
       axisPointer: {
@@ -334,7 +342,7 @@ const Parking = (props: any) => {
                     <div id="percent-chart" />
                   </div>
                   <div className="parking-infowindow-container">
-                    <span className="sub-title">停车入闸趋势</span>
+                    <span className="sub-title">停车场出入闸趋势</span>
                     <div id="line-chart" />
                   </div>
                 </div>),
@@ -372,7 +380,7 @@ const Parking = (props: any) => {
           </div>
           <div className="list-body">
           {
-            parkingList.map((item, index) => {
+            parkingList.sort((a, b) => Math.round((b.overview.total - b.overview.rest) / b.overview.total * 100) - Math.round((a.overview.total - a.overview.rest) / a.overview.total * 100)).map((item, index) => {
               return <div className="list-item">
                 <Row>
                   <Col className="left" span={8}> {item.name} </Col>

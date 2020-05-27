@@ -20,10 +20,10 @@ const DataOverview = (props: IPropDataOverview) => {
   const overview = props.overview || props.defaultOverview || defaultOverview;
   return <div {...props} className={classname}>
     {
-      overview.map(item => <div className="item">
-      <div className="label"> {item.label} </div>
-      <div className="value"> {item.value} </div>
-    </div>)
+      overview.map((item, index) => <div key={`dataoverview-${index}`} className="item">
+        <div className="label"> {item.label} </div>
+        <div className="value"> {item.value} </div>
+      </div>)
     }
   </div>
 }
